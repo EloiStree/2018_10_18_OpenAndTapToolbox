@@ -17,9 +17,11 @@ public class StayingStuffs : MonoBehaviour {
     {
 
         HandedComboTowhatToWay combo = CheckForCorresponding(value);
+        if (combo != null) {
+        Debug.Log("...");
 
-        if (combo != null)
             m_displayInfo.SetWith(combo.m_message, value, combo.m_color, combo.m_clip, combo.m_texture);
+        }
     }
     public void SayTapWithUs(TapValue value)
     {
