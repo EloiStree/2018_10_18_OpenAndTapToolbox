@@ -5,6 +5,7 @@ using UnityEngine;
 
 public abstract class TapSimulator : MonoBehaviour {
 
+    public float m_commitDelay=0.3f;
 
     [Header("Event (Touch)")]
     public OnValueDetected m_onValueDetected;
@@ -12,7 +13,6 @@ public abstract class TapSimulator : MonoBehaviour {
 
     [Header("Debug (Touch)")]
     public bool m_isListening;
-    public float m_commitDelay;
     public float m_countDown;
 
     [SerializeField]
