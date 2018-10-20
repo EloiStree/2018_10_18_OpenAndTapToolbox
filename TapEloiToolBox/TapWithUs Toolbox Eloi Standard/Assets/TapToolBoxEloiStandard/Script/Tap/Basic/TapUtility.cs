@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,7 +27,43 @@ public class TapUtility : MonoBehaviour {
             return value;
     }
 
-    
+    internal static void GetTapValueFrom(bool [] handsBoolState, out TapValue lastTapLeft, out TapValue lastTapRight)
+    {
+        char [] leftHand = new char[5];
+        char [] rightHand = new char[5];
+        GetTapValueAsStringFrom(handsBoolState, out leftHand, out rightHand);
+        lastTapLeft= GetTapValueFrom(leftHand) ;
+        lastTapRight= GetTapValueFrom(rightHand);
+    }
+
+    private static TapValue GetTapValueFrom(char[] leftHand)
+    {
+        foreach (TapCombo item in Enum.GetValues(typeof(TapCombo)).Cast<TapCombo>())
+        {
+            string itemString = item.ToString().Substring(3);
+           
+            if(itemString== new string(leftHand))
+            {
+                Debug.Log(itemString + "<>" + new string(leftHand));
+                return new TapValue(item);
+            }
+        }
+        return null;
+    }
+
+    private static void GetTapValueAsStringFrom(bool[] handsBoolState, out char[] leftHand, out char[] rightHand)
+    {
+        leftHand = new char[5];
+        rightHand = new char[5];
+        for (int i = 0; i < 10; i++)
+        {
+            if(i<5)
+              leftHand[i] = handsBoolState[i] ? 'O' : '_';
+            else
+              rightHand[i-5] = handsBoolState[i] ? 'O' : '_';
+        }
+    }
+
     public struct CharacterToTapWithUsStandard
     {
         public CharacterToTapWithUsStandard(char character, TapCombo combo, int count = 1) {

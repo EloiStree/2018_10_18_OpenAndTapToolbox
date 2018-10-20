@@ -81,8 +81,21 @@ public class TapValue
     }
 }
 public enum HandType { Left, Right }
+public enum FingerIndex : int {
+    LeftPinky=0,
+    LeftRing = 1,
+    LeftMiddle = 2,
+    LeftIndex = 3,
+    leftThumb = 4,
+    RightThumb = 5,
+    RightIndex = 6,
+    RightMiddle = 7,
+    RightRing = 8,
+    RighPinky = 9
+}
 public enum TapCombo : int
 {
+    T99_____ = -1,
     T00O____ = 0,
     T01_O___ = 1,
     T02__O__ = 2,

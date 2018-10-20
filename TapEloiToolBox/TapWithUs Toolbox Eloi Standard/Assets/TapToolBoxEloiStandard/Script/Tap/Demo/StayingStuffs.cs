@@ -13,7 +13,7 @@ public class StayingStuffs : MonoBehaviour {
 
     public Color m_defaultBackground = Color.white;
 
-    public void Say(HandedTapValue value)
+    public void SayHandedValue(HandedTapValue value)
     {
 
         HandedComboTowhatToWay combo = CheckForCorresponding(value);
