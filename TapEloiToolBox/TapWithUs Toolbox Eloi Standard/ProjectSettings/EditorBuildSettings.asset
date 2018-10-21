@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/SoundLibrary/Test.unity
-    guid: 8f179c189bb63ab40aa3caf9a6806fee
-  - enabled: 1
     path: Assets/TapToolBoxEloiStandard/Scene/Demo_Basic.unity
     guid: 20ee8b3d75096fa41902f4b672e4c355
+  - enabled: 1
+    path: Assets/Painter/PaintV2/Scene/PaintCanvas2.unity
+    guid: 298b43b75acac42309e12010d50686d2

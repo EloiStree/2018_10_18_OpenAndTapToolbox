@@ -51,13 +51,13 @@ public abstract class TapSimulator : MonoBehaviour {
         TapUtility.GetTapValueFrom(m_hands, out  lastTapLeft, out  lastTapRight);
         Debug.Log(lastTapLeft + " - " + lastTapRight);
 
-        if (lastTapLeft.m_combo != TapCombo.T99_____)
+        if (lastTapLeft != null && lastTapLeft.m_combo != TapCombo.T99_____)
         {
 
             m_onValueDetected.Invoke(lastTapLeft);
             m_onHandedDetected.Invoke(new HandedTapValue(HandType.Left, lastTapLeft.m_combo));
         }
-        if (lastTapRight.m_combo != TapCombo.T99_____)
+        if (lastTapRight!=null && lastTapRight.m_combo != TapCombo.T99_____)
         {
             m_onValueDetected.Invoke(lastTapRight);
             m_onHandedDetected.Invoke(new HandedTapValue(HandType.Right, lastTapRight.m_combo));

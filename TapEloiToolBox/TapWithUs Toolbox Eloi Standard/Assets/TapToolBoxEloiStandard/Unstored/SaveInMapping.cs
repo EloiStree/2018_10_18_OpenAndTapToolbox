@@ -12,12 +12,39 @@ public class SaveInMapping : MonoBehaviour {
     public InputField m_soundName;
 
     public Image m_valide;
+
+    public StayingStuffs m_sayingStuffs;
 	// Use this for initialization
 	public void SaveBindingToMapping ( ) {
         bool isValide = IsAllValide();
         m_valide.color = isValide ? Color.green : Color.green;
+        if (isValide) {
+            TapValue left, right;
+            TapUtility.GetTapValueFrom(GetBools(), out left, out right);
+            if (left.m_combo != TapCombo.T99_____)
+            {
+                m_sayingStuffs.Add(m_name.text, m_textDisplay.text, m_colorChooser.GetColorSelected(),HandType.Left, left, m_soundName.text);
 
-        
+            }
+            if (right.m_combo != TapCombo.T99_____)
+            {
+                m_sayingStuffs.Add(m_name.text, m_textDisplay.text, m_colorChooser.GetColorSelected(), HandType.Right, right, m_soundName.text);
+
+            }
+            
+
+            m_sayingStuffs.Save();
+        }
+    }
+    public bool[] GetBools() {
+        bool [] fingersState = new bool[10];
+        for (int i = 0; i < 10; i++)
+        {
+            fingersState[i] = m_fingers[i].isOn;
+
+        }
+        return fingersState;
+
 
     }
 

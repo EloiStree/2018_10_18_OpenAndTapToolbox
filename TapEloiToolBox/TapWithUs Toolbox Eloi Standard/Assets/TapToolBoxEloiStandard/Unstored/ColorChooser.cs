@@ -11,7 +11,7 @@ public class ColorChooser : MonoBehaviour {
 
     public void Update()
     {
-        m_debug.color = GetColorOfRainbow(m_slider.value);
+        m_debug.color = GetColorSelected();
     }
 
     public Color GetColorOfRainbow(float pct) {
@@ -28,7 +28,7 @@ public class ColorChooser : MonoBehaviour {
         return  Color.black;
     }
 
-    public float GetColorSelected() {
-        return m_slider.value;
+    public Color GetColorSelected() {
+        return GetColorOfRainbow(m_slider.value);
     }
 }

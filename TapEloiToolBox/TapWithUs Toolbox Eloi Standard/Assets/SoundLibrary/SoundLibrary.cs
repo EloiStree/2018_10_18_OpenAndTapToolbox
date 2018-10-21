@@ -76,18 +76,30 @@ public class SoundLibrary : MonoBehaviour {
 
     private IEnumerator LaunchAudio(string fileName)
     {
-        Debug.Log(DirectoryPath + "/" + fileName);
-        WWW www = new WWW("file:///"+DirectoryPath + "/" + fileName);
-        yield return www;
+        Debug.Log("Hey:Audio: "+ fileName);
+        if (!string.IsNullOrEmpty(fileName)) {
+            
+            Debug.Log(DirectoryPath + "/" + fileName);
+            string path =  DirectoryPath + "/" + fileName;
+            if (File.Exists(path)) {
 
-        AudioClip audio = www.GetAudioClip();
-        if (audio != null)
-        {
-            m_audioSource.clip = audio;
-            m_audioSource.Play();
+                Debug.Log("Hey:dddd: " + fileName);
+                WWW www;
+
+                www = new WWW("file:///" +path);
+                yield return www;
+
+                AudioClip audio = www.GetAudioClip();
+                if (audio != null)
+                {
+                    m_audioSource.clip = audio;
+                    m_audioSource.Play();
+                }
+
+            }
+
+
         }
-
-        
     }
     
 
