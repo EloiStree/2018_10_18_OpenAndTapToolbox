@@ -59,6 +59,7 @@ public class UI_BindAction : MonoBehaviour {
     {
         m_tapValue.Clear();
         m_handValue.Clear();
+        if(m_handsValue)
         m_handsValue.Clear();
     }
 

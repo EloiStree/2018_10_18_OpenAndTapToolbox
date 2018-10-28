@@ -6,5 +6,5 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/TapToolBoxEloiStandard/Scene/Demo_Basic.unity
-    guid: 20ee8b3d75096fa41902f4b672e4c355
+    path: Assets/0HGameJam/Scene/JokerTap.unity
+    guid: 85e5ec3968d3be34aab0ab60588c625a
