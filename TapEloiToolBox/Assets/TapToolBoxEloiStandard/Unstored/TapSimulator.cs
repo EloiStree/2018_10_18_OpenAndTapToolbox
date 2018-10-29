@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class TapSimulator : MonoBehaviour, ITapListener
 {
 
-    public string m_context = "Simulation";
+    public TapInputType m_context = TapInputType.OpenInput;
     public bool IsListening()
     {
         return m_listeningToTap;
@@ -24,9 +24,16 @@ public abstract class TapSimulator : MonoBehaviour, ITapListener
 
     public string GetName()
     {
+        return m_context.ToString();
+    }
+    public TapInputType GetListenerType()
+    {
         return m_context;
     }
-
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
     public bool m_listeningToTap = true;
 
     public float m_commitDelay=0.3f;
@@ -46,6 +53,30 @@ public abstract class TapSimulator : MonoBehaviour, ITapListener
     public bool [] m_hands= new bool[10];
 
 
+
+    
+    public ToDoOnHandsTapValueDetected toDoOnhandsvalueDetected;
+
+
+    public void AddListener(ToDoOnHandsTapValueDetected listener)
+    {
+        RemoveListener(listener);
+        toDoOnhandsvalueDetected += listener;
+    }
+
+    public void RemoveListener(ToDoOnHandsTapValueDetected listener)
+    {
+        toDoOnhandsvalueDetected -= listener;
+    }
+
+
+    public void AddListener(ToDoOnTapValueDetected listener)
+    {
+    }
+
+    public void RemoveListener(ToDoOnTapValueDetected listener)
+    {
+    }
 
 
     private void Awake()
@@ -102,6 +133,9 @@ public abstract class TapSimulator : MonoBehaviour, ITapListener
         if (anyFound)
         {
             m_onHandsValueDetected.Invoke(new HandsTapValue(lastTapLeft.m_combo, lastTapRight.m_combo));
+
+            if (toDoOnhandsvalueDetected != null)
+                toDoOnhandsvalueDetected(this, new HandsTapValue(lastTapLeft.m_combo, lastTapRight.m_combo));
         }
 
         ResetHandsValue();
@@ -155,4 +189,6 @@ public abstract class TapSimulator : MonoBehaviour, ITapListener
         if (m_hands.Length != 10)
             m_hands = new bool[10];
     }
+
 }
+

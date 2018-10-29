@@ -8,7 +8,7 @@ public class UI_TapValue : MonoBehaviour
 {
     public Toggle[] m_combo = new Toggle[5];
 
-    internal void SetWith(TapValue value)
+    public void SetWith(TapValue value)
     {
         if (value == null) {
             Clear();
@@ -20,7 +20,7 @@ public class UI_TapValue : MonoBehaviour
         }
     }
 
-    internal void Clear()
+    public  void Clear()
     {
         for (int i = 0; i < 5; i++)
         {
