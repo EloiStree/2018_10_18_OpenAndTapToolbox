@@ -8,7 +8,22 @@ public class UI_HandTapValue : MonoBehaviour {
     public GameObject m_left, m_right;
     public UI_TapValue m_tapvalue;
 
-    public void SetWith(HandTapValue value)
+    public void SetWith(HandsTapValue value)
+    {
+        if (!value.m_leftCombo.HasFingersPressed() && value.m_rightCombo.HasFingersPressed())
+        {
+            SetWith(new HandTapValue(HandType.Right, value.m_rightCombo.m_combo));
+        }
+        else if (value.m_leftCombo.HasFingersPressed() && !value.m_rightCombo.HasFingersPressed())
+        {
+
+            SetWith(new HandTapValue(HandType.Left, value.m_leftCombo.m_combo));
+        }
+        else Clear();
+
+    }
+
+        public void SetWith(HandTapValue value)
     {
         bool isLeft = value.m_handType == HandType.Left;
         m_left.SetActive(isLeft);

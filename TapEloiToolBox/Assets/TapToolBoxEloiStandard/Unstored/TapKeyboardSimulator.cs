@@ -49,6 +49,12 @@ public class TapKeyboardSimulator : TapSimulator
     };
     }
 
+    
+
+    private void Reset()
+    {
+        m_context = TapInputType.KeyboardInput;
+    }
     public override bool IsOn(FingerIndex fingerId)
     {
             return Input.GetKey(m_fingers[(int)fingerId]);

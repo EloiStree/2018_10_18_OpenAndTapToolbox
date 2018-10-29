@@ -50,6 +50,118 @@ public class HandsTapValue {
         return ((a.m_leftCombo.m_combo == b.m_leftCombo.m_combo) && (a.m_rightCombo.m_combo == b.m_rightCombo.m_combo));
     }
 
+
+    public bool IsDown(FingerIndex fingerIndex, bool ignoreHandSide = false)
+    {
+        bool[] handsState = GetHandsState();
+
+        int index = (int) fingerIndex;
+        int ignoredSideIndex = index > 4 ? index - 5 : index;
+        if (ignoreHandSide)
+        {
+            switch (fingerIndex)
+            {
+                case FingerIndex.LeftPinky:
+                case FingerIndex.RighPinky:
+                    return handsState[(int)FingerIndex.LeftPinky] || handsState[(int)FingerIndex.RighPinky];
+                case FingerIndex.LeftMiddle:
+                case FingerIndex.RightMiddle:
+                    return handsState[(int)FingerIndex.LeftMiddle] || handsState[(int)FingerIndex.RightMiddle];
+                case FingerIndex.leftThumb:
+                case FingerIndex.RightThumb:
+                    return handsState[(int)FingerIndex.leftThumb] || handsState[(int)FingerIndex.RightThumb];
+                case FingerIndex.LeftIndex:
+                case FingerIndex.RightIndex:
+                    return handsState[(int)FingerIndex.LeftIndex] || handsState[(int)FingerIndex.RightIndex];
+                case FingerIndex.LeftRing:
+                case FingerIndex.RightRing:
+                    return handsState[(int)FingerIndex.LeftRing] || handsState[(int)FingerIndex.RightRing];
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            return handsState[index];
+
+        }
+        return false;
+    }
+    public void Add(HandsTapValue handsValue)
+    {
+        m_leftCombo.Append(handsValue.m_leftCombo);
+        m_rightCombo.Append(handsValue.m_rightCombo);
+
+    }
+    public void Add(HandTapValue handValue)
+    {
+
+        if (handValue.m_handType == HandType.Left)
+            m_leftCombo.Append(handValue);
+        else m_rightCombo.Append(handValue);
+    }
+    public void Add(TapValue handValue, HandType handType)
+    {
+
+        if (handType == HandType.Left)
+            m_leftCombo.Append(handValue);
+        else m_rightCombo.Append(handValue);
+    }
+
+    public void Set(HandsTapValue handsValue)
+    {
+
+        m_leftCombo.SetWith(handsValue.m_leftCombo);
+        m_rightCombo.SetWith(handsValue.m_rightCombo);
+    }
+    public void Set(HandTapValue handValue)
+    {
+
+        if (handValue.m_handType == HandType.Left)
+            m_leftCombo.SetWith(handValue);
+        else m_rightCombo.SetWith(handValue);
+    }
+    public void Set(TapValue handValue, HandType handType)
+    {
+        if (handType == HandType.Left)
+            m_leftCombo.SetWith(handValue);
+        else m_rightCombo.SetWith(handValue);
+
+    }
+    public bool[] GetHandsState()
+    {
+        bool[] handState = new bool[10];
+        for (int i = 0; i < 10; i++)
+        {
+            if (i<5)
+                handState[i] = m_leftCombo.IsFingerActive(i);
+            else
+                handState[i] = m_rightCombo.IsFingerActive(i-5);
+        }
+        return handState;
+    }
+    public bool[] GetHandState(HandType handType)
+    {
+        bool[] handState = new bool[5];
+        for (int i = 0; i < 5; i++)
+        {
+            if (handType == HandType.Left)
+                handState[i] = m_leftCombo.IsFingerActive(i);
+            else
+
+                handState[i] = m_rightCombo.IsFingerActive(i);
+        }
+        return handState;
+    }
+
+
+    public void Clear()
+    {
+
+        m_leftCombo.Clear();
+        m_rightCombo.Clear();
+    }
+
 }
 
 [System.Serializable]
@@ -135,7 +247,68 @@ public class TapValue
         string combo = GetDescription();
         return combo[index]!='_';
     }
+
+    internal void Clear()
+    {
+        m_combo = TapCombo.T_____;
+    }
+
+    internal void SetWith(TapValue value)
+    {
+        m_combo = value.m_combo;
+    }
+
+    internal void Append(TapValue value)
+    {
+        bool [] current = GetFingersState();
+        bool [] given = value.GetFingersState();
+        bool [] result = new bool[5];
+        for (int i = 0; i < 5; i++)
+        {
+            result [i] = current[i] || given[i];
+        }
+    }
+
+    private bool[] GetFingersState()
+    {
+        bool[] result = new bool[5];
+        for (int i = 0; i < 5; i++)
+        {
+            result[i] = IsFingerActive(i);
+        }
+        return result;
+    }
+
+    public void SetFingersState(bool[] state) {
+        string strCombo = "T";
+        for (int i = 0; i < 5; i++)
+        {
+            strCombo += state[i] ? 'O' : '_';
+        }
+        TapCombo combo = (TapCombo) Enum.Parse(typeof(TapCombo), strCombo);
+        m_combo = combo;
+    }
+
+    internal bool HasFingersPressed()
+    {
+        return m_combo != TapCombo.T_____;
+    }
+
+    internal void Inverse()
+    {
+        bool[] current = GetFingersState();
+        bool tmp = false;
+        for (int i = 0; i < 3; i++)
+        {
+            tmp = current[i];
+            current[i] = current[4 - i];
+            current[4 - i] = tmp;
+        }
+        SetFingersState(current);
+    }
 }
+
+
 public enum HandType { Left, Right }
 public enum FingerIndex : int {
     LeftPinky=0,

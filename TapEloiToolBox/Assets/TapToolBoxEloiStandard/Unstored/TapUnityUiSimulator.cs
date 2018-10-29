@@ -12,5 +12,9 @@ public class TapUnityUiSimulator : TapSimulator {
     {
             return m_fingers[(int)fingerIndex].IsUserPressing();
     }
-    
+
+    private void Reset()
+    {
+        m_context = TapInputType.UIInput;
+    }
 }

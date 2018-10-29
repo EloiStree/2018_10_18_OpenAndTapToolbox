@@ -32,12 +32,12 @@ public class TapBindingToAction : MonoBehaviour {
         if (values.Count > 0)
         {
             m_onTapWithUsEvent.Invoke(values[0].m_actionToSend, values[0].m_tapValue);
-            m_onAnyAction.Invoke(values[0].m_actionToSend, TapUtility.ConvertToHandsValue(values[0].m_tapValue));
+            m_onAnyAction.Invoke(values[0].m_actionToSend, TapUtility.ConvertToHandsValue(HandType.Right, values[0].m_tapValue));
             m_onAction.Invoke(values[0].m_actionToSend);
         }
         else if (!m_displayOnlyValide) {
             m_onTapWithUsEvent.Invoke("", value);
-            m_onAnyAction.Invoke("", TapUtility.ConvertToHandsValue(value));
+            m_onAnyAction.Invoke("", TapUtility.ConvertToHandsValue(HandType.Right, value));
         }
     }
 
