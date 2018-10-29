@@ -20,6 +20,8 @@ public class TapKeyboardSimulator : TapSimulator
     };
 
     public void SetWithAzerty() {
+        if (base.m_context != TapInputType.KeyboardInput)
+            return;
         m_fingers = new KeyCode[] {
         KeyCode.A,
         KeyCode.Z,
@@ -35,6 +37,8 @@ public class TapKeyboardSimulator : TapSimulator
     }
     public void SetWithQuerty()
     {
+        if (base.m_context != TapInputType.KeyboardInput)
+            return;
         m_fingers = new KeyCode[] {
         KeyCode.Q,
         KeyCode.W,
