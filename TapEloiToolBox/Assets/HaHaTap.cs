@@ -18,6 +18,8 @@ public class HaHaTap : MonoBehaviour {
     {
         m_produced++;
         m_tapCombo = (TapCombo)UnityEngine.Random.Range(0, 30);
+        if (m_tapCombo == TapCombo.TOOO__ || m_tapCombo == TapCombo.T__OOO)
+            m_tapCombo = TapCombo.T_OOO_;
         m_ui.SetWith(new TapValue(m_tapCombo));
     }
 
@@ -42,12 +44,14 @@ public class HaHaTap : MonoBehaviour {
         Destroy(this.gameObject);
     }
 
-    public  void TryToDestoy(TapCombo combo) {
+    public  bool TryToDestoy(TapCombo combo) {
         if (m_tapCombo == combo)
         {
             KillItWithFire();
 
             m_kill++;
+            return true;
         }
+        return false;
     }
 }

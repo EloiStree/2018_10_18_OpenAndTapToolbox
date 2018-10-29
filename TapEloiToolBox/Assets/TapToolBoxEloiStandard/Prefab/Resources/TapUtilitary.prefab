@@ -309,7 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbaceba09ab243c4f83156105fef7a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_handTypeStart: 0
+  m_handTypeStart: 1
   m_listeners: []
 --- !u!114 &114949311248796752
 MonoBehaviour:
