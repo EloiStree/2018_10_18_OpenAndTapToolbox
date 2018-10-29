@@ -25,6 +25,68 @@ public class HandsTapValue {
             return new HandTapValue(handType, m_rightCombo.m_combo);
     }
 
+    public TapValue GetTapValue()
+    {
+        if (m_leftCombo.HasFingersPressed() && m_rightCombo.HasFingersPressed())
+            return null;
+        if (!m_leftCombo.HasFingersPressed() && !m_rightCombo.HasFingersPressed())
+            return null;
+        if (m_leftCombo.HasFingersPressed())
+            return new HandTapValue(HandType.Left, m_leftCombo.m_combo);
+        if (m_rightCombo.HasFingersPressed())
+            return new HandTapValue(HandType.Right, m_rightCombo.m_combo);
+        return null;
+    }
+
+    public TapValue GetTapAppendValue()
+    {
+        TapValue val = new TapValue(TapCombo.T_____);
+        val.Append(m_leftCombo);
+        val.Append(m_rightCombo);
+        return val;
+    }
+
+
+    public void Append(HandsTapValue value) {
+
+        if (value == null)
+            return;
+
+        bool[] fingersCreated = value.GetHandsState();
+        bool[] fingers = GetHandsState();
+        for (int i = 0; i < 10; i++)
+        {
+            fingers[i] = fingers[i] || fingersCreated[i];
+        }
+        Set(fingers);
+    }
+    internal void Append(HandTapValue value)
+    {
+        Append(TapUtility.ConvertToHandsValue(value));
+        
+    }
+    internal void Append(TapValue value)
+    {
+        TapValue inverseValue = new TapValue( value.m_combo);
+        inverseValue.Inverse();
+        Append(TapUtility.ConvertToHandsValue(HandType.Left, inverseValue));
+        Append(TapUtility.ConvertToHandsValue(HandType.Right, value));
+    }
+
+    internal HandTapValue GetHandTapValue()
+    {
+        if (m_leftCombo.HasFingersPressed() && m_rightCombo.HasFingersPressed())
+            return null;
+        if (!m_leftCombo.HasFingersPressed() && !m_rightCombo.HasFingersPressed())
+            return null;
+        if (m_leftCombo.HasFingersPressed() )
+            return new HandTapValue(HandType.Left, m_leftCombo.m_combo);
+        if ( m_rightCombo.HasFingersPressed())
+            return new HandTapValue(HandType.Right, m_rightCombo.m_combo);
+        return null;
+
+    }
+
     public override bool Equals(object obj)
     {
         if (obj == null)
@@ -107,6 +169,26 @@ public class HandsTapValue {
             m_leftCombo.Append(handValue);
         else m_rightCombo.Append(handValue);
     }
+
+    public void Set(bool [] fingerState)
+    {
+        if (fingerState == null)
+            return;
+
+        if (fingerState.Length != 10)
+        {
+
+            bool[] fingers = new bool[10];
+            for (int i = 0; i < fingerState.Length && i < 10; i++)
+            {
+                fingers[i] = fingerState[i]; 
+            }
+            fingerState = fingers;
+        }
+
+        TapUtility.GetTapValueFrom(fingerState, out m_leftCombo, out m_rightCombo);
+    }
+
 
     public void Set(HandsTapValue handsValue)
     {

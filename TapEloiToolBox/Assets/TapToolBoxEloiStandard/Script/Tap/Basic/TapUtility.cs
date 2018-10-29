@@ -16,6 +16,8 @@ public class TapUtility : MonoBehaviour {
             return new TapValue( TapCombo.T_____);
         
     }
+
+    
     public static HandTapValue GetTapBasedOnEloiStandard(char character)
     {
         CharacterToEloiStandard[] valuesFound= EloiStandard.Where(k => k.m_character == character).ToArray();
@@ -44,9 +46,13 @@ public class TapUtility : MonoBehaviour {
     internal static HandsTapValue ConvertToHandsValue(HandTapValue value)
     {
         if (value.m_handType == HandType.Right)
+        {
             return new HandsTapValue(TapCombo.T_____, value.m_combo);
-        else
+
+        }
+        else {
             return new HandsTapValue(value.m_combo,TapCombo.T_____);
+        }
     }
 
     private static TapValue GetTapValueFrom(char[] leftHand)

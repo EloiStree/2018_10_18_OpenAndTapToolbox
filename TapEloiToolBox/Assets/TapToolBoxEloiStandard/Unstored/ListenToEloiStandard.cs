@@ -25,7 +25,7 @@ public class ListenToEloiStandard : MonoBehaviour, ITapListener
     public bool m_listenToEloiStandard = true;
     public OnHandValueDetected m_onHandComboDetected;
 
-  
+    public HandsTapValue m_lastFrame = new HandsTapValue(TapCombo.T_____, TapCombo.T_____);
 
     void Update()
     {
@@ -33,12 +33,15 @@ public class ListenToEloiStandard : MonoBehaviour, ITapListener
         string input = Input.inputString;
         if (input.Length > 0)
         {
+            m_lastFrame.Clear();
             foreach (char c in input.ToCharArray())
             {
                 if (m_listenToEloiStandard)
                 {
 
                     HandTapValue eloiValue = TapUtility.GetTapBasedOnEloiStandard(c);
+                    m_lastFrame.Append(eloiValue);
+
                     m_onHandComboDetected.Invoke(eloiValue);
                     if(toDoOnhandsvalueDetected!=null)
                     toDoOnhandsvalueDetected(this, TapUtility.ConvertToHandsValue(eloiValue));
@@ -83,6 +86,10 @@ public class ListenToEloiStandard : MonoBehaviour, ITapListener
     public void RemoveListener(ToDoOnTapValueDetected listener)
     {
     }
+    public bool IsFingerDown(FingerIndex finger)
+    {
+       return m_lastFrame.IsDown(finger );
+    }
 }
 
 public interface ITapListener {
@@ -93,6 +100,7 @@ public interface ITapListener {
     string GetName();
     TapInputType GetListenerType();
     GameObject GetGameObject();
+    bool IsFingerDown(FingerIndex finger);
 
     void AddListener(ToDoOnTapValueDetected listener);
     void RemoveListener(ToDoOnTapValueDetected listener);

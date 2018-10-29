@@ -27,6 +27,11 @@ public class UI_HandsTapValue : MonoBehaviour {
 
     public void SetWith(HandsTapValue value)
     {
+        if (value == null)
+        {
+            Clear();
+            return;
+        }
         m_left.SetWith(value.GetHand(HandType.Left));
         m_right.SetWith(value.GetHand(HandType.Right));
     }

@@ -33,15 +33,20 @@ public class TapUtilitary  {
     public static OnHandsValueDetected m_onAllTapDetected = new OnHandsValueDetected();
     public static ITapListener[] m_listeners = new ITapListener[0];
 
+    public static void SetHandTo(HandType value)
+    {
+        m_userHandType = value;
+
+    }
 
     public static void NotifyTapDetected( TapValue value)
     {
         CheckForSingleton();
-
+        TapValue val = new TapValue(value.m_combo);
         if (m_userHandType == HandType.Left)
-            value.Inverse();
+            val.Inverse();
 
-        HandsTapValue hands = TapUtility.ConvertToHandsValue(m_userHandType , value);
+        HandsTapValue hands = TapUtility.ConvertToHandsValue(m_userHandType , val);
 
         NotifyHandsTapValueDetected(TapInputType.TapWithUs, hands);
 
@@ -160,4 +165,46 @@ public class TapUtilitary  {
         NotifyHandsTapValueDetected(listener.GetListenerType(), value);
     }
     #endregion
+
+
+
+    private static int m_lasUpdateFrame=-1;
+    private static HandsTapValue m_handsState = new HandsTapValue(TapCombo.T_____, TapCombo.T_____);
+    public static HandsTapValue GetHandsState() {
+        int frame = Time.frameCount;
+        if (m_lasUpdateFrame == frame)
+        {
+            return m_handsState;
+        }
+        else m_handsState.Clear();
+
+        m_lasUpdateFrame = frame;
+        bool[] fingersState = new bool[10];
+
+        foreach (ITapListener listener in m_listeners)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (IsListeningTo(listener.GetListenerType())) {
+                    if (listener.GetListenerType() == TapInputType.TapWithUs) {
+                        bool isLeft = m_userHandType == HandType.Left;
+
+
+                        fingersState[i] = fingersState[i] ||
+                            isLeft && i > 4 ? false : listener.IsFingerDown((FingerIndex)i) ||
+                            !isLeft && i < 5 ? false : listener.IsFingerDown((FingerIndex)i)  ;
+                    }
+                    else
+                     fingersState[i] = fingersState[i] || listener.IsFingerDown((FingerIndex)i); 
+                }
+            }
+
+
+        }
+        m_handsState.Set(fingersState);
+
+
+        return m_handsState;
+    }
+
 }

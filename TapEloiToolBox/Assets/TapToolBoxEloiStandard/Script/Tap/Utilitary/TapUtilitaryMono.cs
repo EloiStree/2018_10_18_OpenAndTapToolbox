@@ -6,13 +6,13 @@ using UnityEngine;
 public class TapUtilitaryMono : MonoBehaviour {
 
     public OnHandsValueDetected m_onHandsTapDetected;
-    public OnTapValueDetected m_onTapDetected;
 
     public TapInputType[] m_listenToAtStart = new TapInputType[] { TapInputType.UIInput, TapInputType.TapWithUs};
 
 
     [Header("View")]
     public HandType m_userHandType;
+    public HandsTapValue m_handsState;
 
 
     [Header("Debug ")]
@@ -23,7 +23,9 @@ public class TapUtilitaryMono : MonoBehaviour {
     public void Update()
     {
         m_userHandType = TapUtilitary.m_userHandType;
-        
+        m_handsState = TapUtilitary.GetHandsState();
+
+
     }
 
     void Start () {
@@ -33,12 +35,7 @@ public class TapUtilitaryMono : MonoBehaviour {
         {
             TapUtilitary.ListenTo(type, true);
         }
-
-
-        TapUtilitary.m_onTapDetected.AddListener(
-            delegate (TapValue value) {
-                m_onTapDetected.Invoke(value);
-            });
+        
         TapUtilitary.m_onAllTapDetected.AddListener(
             delegate (HandsTapValue value) {
                 m_onHandsTapDetected.Invoke(value);

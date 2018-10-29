@@ -77,7 +77,11 @@ public abstract class TapSimulator : MonoBehaviour, ITapListener
     public void RemoveListener(ToDoOnTapValueDetected listener)
     {
     }
+    public bool IsFingerDown(FingerIndex finger)
+    {
+        return IsOn(finger);
 
+    }
 
     private void Awake()
     {

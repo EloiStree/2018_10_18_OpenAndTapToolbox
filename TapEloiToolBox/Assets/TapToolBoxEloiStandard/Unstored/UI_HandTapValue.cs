@@ -25,6 +25,11 @@ public class UI_HandTapValue : MonoBehaviour {
 
         public void SetWith(HandTapValue value)
     {
+        if (value == null)
+        {
+            Clear();
+            return;
+        }
         bool isLeft = value.m_handType == HandType.Left;
         m_left.SetActive(isLeft);
         m_right.SetActive(!isLeft);
