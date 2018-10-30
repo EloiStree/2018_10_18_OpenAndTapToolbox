@@ -77,7 +77,7 @@ public abstract class TapSimulator : MonoBehaviour, ITapListener
     public void RemoveListener(ToDoOnTapValueDetected listener)
     {
     }
-    public bool IsFingerDown(FingerIndex finger)
+    public bool IsFingerPressing(FingerIndex finger)
     {
         return IsOn(finger);
 
@@ -119,27 +119,27 @@ public abstract class TapSimulator : MonoBehaviour, ITapListener
         TapUtility.GetTapValueFrom(m_hands, out lastTapLeft, out lastTapRight);
         //Debug.Log(lastTapLeft.m_combo + ".<>." + lastTapRight.m_combo);
 
-        bool leftFound = lastTapLeft != null && lastTapLeft.m_combo != TapCombo.T_____;
-        bool rightFound = lastTapRight != null && lastTapRight.m_combo != TapCombo.T_____;
+        bool leftFound = lastTapLeft != null && lastTapLeft.GetTapCombo() != TapCombo.T_____;
+        bool rightFound = lastTapRight != null && lastTapRight.GetTapCombo() != TapCombo.T_____;
         bool anyFound = leftFound || rightFound;
 
         if (leftFound)
         {
             m_onTapValueDetected.Invoke(lastTapLeft);
-            m_onHandValueDetected.Invoke(new HandTapValue(HandType.Left, lastTapLeft.m_combo));
+            m_onHandValueDetected.Invoke(new HandTapValue(HandType.Left, lastTapLeft.GetTapCombo()));
         }
         if (rightFound)
         {
             m_onTapValueDetected.Invoke(lastTapRight);
-            m_onHandValueDetected.Invoke(new HandTapValue(HandType.Right, lastTapRight.m_combo));
+            m_onHandValueDetected.Invoke(new HandTapValue(HandType.Right, lastTapRight.GetTapCombo()));
         }
 
         if (anyFound)
         {
-            m_onHandsValueDetected.Invoke(new HandsTapValue(lastTapLeft.m_combo, lastTapRight.m_combo));
+            m_onHandsValueDetected.Invoke(new HandsTapValue(lastTapLeft.GetTapCombo(), lastTapRight.GetTapCombo()));
 
             if (toDoOnhandsvalueDetected != null)
-                toDoOnhandsvalueDetected(this, new HandsTapValue(lastTapLeft.m_combo, lastTapRight.m_combo));
+                toDoOnhandsvalueDetected(this, new HandsTapValue(lastTapLeft.GetTapCombo(), lastTapRight.GetTapCombo()));
         }
 
         ResetHandsValue();

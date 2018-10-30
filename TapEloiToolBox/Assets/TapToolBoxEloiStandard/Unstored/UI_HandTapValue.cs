@@ -10,14 +10,14 @@ public class UI_HandTapValue : MonoBehaviour {
 
     public void SetWith(HandsTapValue value)
     {
-        if (!value.m_leftCombo.HasFingersPressed() && value.m_rightCombo.HasFingersPressed())
+        if (!value.GetLeftValue().HasFingersPressed() && value.GetRightValue().HasFingersPressed())
         {
-            SetWith(new HandTapValue(HandType.Right, value.m_rightCombo.m_combo));
+            SetWith(new HandTapValue(HandType.Right, value.GetRightValue().GetTapCombo()));
         }
-        else if (value.m_leftCombo.HasFingersPressed() && !value.m_rightCombo.HasFingersPressed())
+        else if (value.GetLeftValue().HasFingersPressed() && !value.GetRightValue().HasFingersPressed())
         {
 
-            SetWith(new HandTapValue(HandType.Left, value.m_leftCombo.m_combo));
+            SetWith(new HandTapValue(HandType.Left, value.GetLeftValue().GetTapCombo()));
         }
         else Clear();
 

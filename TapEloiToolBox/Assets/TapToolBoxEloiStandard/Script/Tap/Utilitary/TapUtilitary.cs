@@ -27,6 +27,7 @@ public class TapUtilitary  {
         }
     }
 
+  
 
     public static HandType m_userHandType = HandType.Right;
     public static OnTapValueDetected m_onTapDetected= new OnTapValueDetected();
@@ -42,7 +43,7 @@ public class TapUtilitary  {
     public static void NotifyTapDetected( TapValue value)
     {
         CheckForSingleton();
-        TapValue val = new TapValue(value.m_combo);
+        TapValue val = new TapValue(value.GetTapCombo());
         if (m_userHandType == HandType.Left)
             val.Inverse();
 
@@ -170,6 +171,8 @@ public class TapUtilitary  {
 
     private static int m_lasUpdateFrame=-1;
     private static HandsTapValue m_handsState = new HandsTapValue(TapCombo.T_____, TapCombo.T_____);
+    public  static HandsTapValue dd = new HandsTapValue(TapCombo.T_____, TapCombo.T_____);
+
     public static HandsTapValue GetHandsState() {
         int frame = Time.frameCount;
         if (m_lasUpdateFrame == frame)
@@ -187,24 +190,118 @@ public class TapUtilitary  {
             {
                 if (IsListeningTo(listener.GetListenerType())) {
                     if (listener.GetListenerType() == TapInputType.TapWithUs) {
+
                         bool isLeft = m_userHandType == HandType.Left;
 
+                        if (isLeft)
+                        {
+                            if (i < 5)
+                                fingersState[i] = fingersState[i] || listener.IsFingerPressing((FingerIndex)i);
+                        }
+                        else
+                        {
+                            if (i > 4)
+                                fingersState[i] = fingersState[i] || listener.IsFingerPressing((FingerIndex)i);
+                        }
 
-                        fingersState[i] = fingersState[i] ||
-                            isLeft && i > 4 ? false : listener.IsFingerDown((FingerIndex)i) ||
-                            !isLeft && i < 5 ? false : listener.IsFingerDown((FingerIndex)i)  ;
                     }
                     else
-                     fingersState[i] = fingersState[i] || listener.IsFingerDown((FingerIndex)i); 
+                     fingersState[i] = fingersState[i] || listener.IsFingerPressing((FingerIndex)i);
+
+                    
                 }
             }
 
 
         }
+       
         m_handsState.Set(fingersState);
-
+        //if(m_handsState.HasFingerDown())
+        //    Debug.Log(frame + ": " + m_handsState.ToString());
 
         return m_handsState;
     }
+
+   
+
+    public bool IsFinngerPressing(FingerIndex finger) {
+
+        return m_handsState.IsDown(finger);
+    }
+
+    #region DOWN & UP Detection
+    // SHould be isolted in different class
+
+    public static void UpdateToCall()
+    {
+
+    //    m_handsState = GetHandsState();
+    //    DetectedAndUpdateDownState(m_handsState.GetHandsState());
+    }
+    public static void UpdateEndFrameToCall()
+    {
+
+        m_handsState = GetHandsState();
+        DetectedAndUpdateDownState(m_handsState.GetHandsState());
+    }
+
+
+    private static void DetectedAndUpdateDownState(bool[] fingersState)
+    {
+        bool onValueChange;
+        bool onDownDetected;
+        bool onUpDetected;
+        for (int i = 0; i < 10; i++)
+        {
+            m_handsIsDownState[i] = false;
+
+            onValueChange = DoesFingerChangedState(ref fingersState, ref m_handsPressState, i);
+            onDownDetected = DoesChangeStateIsADown(fingersState, onValueChange, i);
+            onUpDetected = DoesChangeStateIsAUp(fingersState, onValueChange, i);
+
+            m_handsIsDownState[i] = onDownDetected;
+            m_handsIsUpState[i] = onUpDetected;
+            m_handsPressState[i] = fingersState[i];
+        }
+    }
+
+    private static bool DoesChangeStateIsADown(bool[] fingersState, bool onValueChange, int i)
+    {
+        return onValueChange && fingersState[i];
+    }
+
+    private static bool DoesChangeStateIsAUp(bool[] fingersState, bool onValueChange, int i)
+    {
+        return onValueChange && !fingersState[i];
+    }
+
+
+    private static bool DoesFingerChangedState(ref bool[] fingersState,ref bool[] previousState, int index)
+    {
+        return fingersState[index] != m_handsPressState[index];
+    }
+
+    public static bool[] m_handsPressState = new bool[10];
+    public static bool[] m_handsIsDownState = new bool[10];
+    public static bool[] m_handsIsUpState = new bool[10];
+
+    
+    internal static bool IsFingerDown(FingerIndex value)
+    {
+        return m_handsIsDownState[(int)value];
+    }
+
+    internal static bool IsFingerPressing(FingerIndex value)
+    {
+        return m_handsPressState[(int)value];
+    }
+    internal static bool IsFingerUp(FingerIndex value)
+    {
+        return m_handsIsUpState[(int)value];
+    }
+
+    #endregion
+
+
 
 }

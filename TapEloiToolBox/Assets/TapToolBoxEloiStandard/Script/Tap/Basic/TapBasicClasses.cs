@@ -4,38 +4,56 @@
 
 
 using System;
-
+using UnityEngine;
 
 
 [System.Serializable]
 public class HandsTapValue {
 
-    public TapValue m_leftCombo;
-    public TapValue m_rightCombo;
+    [SerializeField]
+    private TapValue m_leftCombo;
+    [SerializeField]
+    private TapValue m_rightCombo;
+
+
+
+    public HandsTapValue(): this(TapCombo.T_____, TapCombo.T_____)
+    {}
+
 
     public HandsTapValue(TapCombo left, TapCombo right) {
         m_leftCombo = new TapValue(left);
         m_rightCombo = new TapValue(right);
     }
 
+    internal TapValue GetRightValue()
+    {
+        return m_rightCombo;
+    }
+
+    internal TapValue GetLeftValue()
+    {
+        return m_leftCombo;
+    }
+
     public HandTapValue GetHand(HandType handType) {
         if(handType==HandType.Left)
-            return new HandTapValue(handType, m_leftCombo.m_combo);
+            return new HandTapValue(handType, m_leftCombo.GetTapCombo());
         else
-            return new HandTapValue(handType, m_rightCombo.m_combo);
+            return new HandTapValue(handType, m_rightCombo.GetTapCombo());
     }
 
     public TapValue GetTapValue()
     {
         if (m_leftCombo.HasFingersPressed() && m_rightCombo.HasFingersPressed())
-            return null;
+            return new TapValue(TapCombo.T_____);
         if (!m_leftCombo.HasFingersPressed() && !m_rightCombo.HasFingersPressed())
-            return null;
+            return new TapValue(TapCombo.T_____);
         if (m_leftCombo.HasFingersPressed())
-            return new HandTapValue(HandType.Left, m_leftCombo.m_combo);
+            return new HandTapValue(HandType.Left, m_leftCombo.GetTapCombo());
         if (m_rightCombo.HasFingersPressed())
-            return new HandTapValue(HandType.Right, m_rightCombo.m_combo);
-        return null;
+            return new HandTapValue(HandType.Right, m_rightCombo.GetTapCombo());
+        return new TapValue(TapCombo.T_____);
     }
 
     public TapValue GetTapAppendValue()
@@ -67,7 +85,7 @@ public class HandsTapValue {
     }
     internal void Append(TapValue value)
     {
-        TapValue inverseValue = new TapValue( value.m_combo);
+        TapValue inverseValue = new TapValue( value.GetTapCombo());
         inverseValue.Inverse();
         Append(TapUtility.ConvertToHandsValue(HandType.Left, inverseValue));
         Append(TapUtility.ConvertToHandsValue(HandType.Right, value));
@@ -80,9 +98,9 @@ public class HandsTapValue {
         if (!m_leftCombo.HasFingersPressed() && !m_rightCombo.HasFingersPressed())
             return null;
         if (m_leftCombo.HasFingersPressed() )
-            return new HandTapValue(HandType.Left, m_leftCombo.m_combo);
+            return new HandTapValue(HandType.Left, m_leftCombo.GetTapCombo());
         if ( m_rightCombo.HasFingersPressed())
-            return new HandTapValue(HandType.Right, m_rightCombo.m_combo);
+            return new HandTapValue(HandType.Right, m_rightCombo.GetTapCombo());
         return null;
 
     }
@@ -109,7 +127,7 @@ public class HandsTapValue {
     {
         if (a == null || b == null)
             return false;
-        return ((a.m_leftCombo.m_combo == b.m_leftCombo.m_combo) && (a.m_rightCombo.m_combo == b.m_rightCombo.m_combo));
+        return ((a.m_leftCombo.GetTapCombo() == b.m_leftCombo.GetTapCombo()) && (a.m_rightCombo.GetTapCombo() == b.m_rightCombo.GetTapCombo()));
     }
 
 
@@ -151,12 +169,16 @@ public class HandsTapValue {
     }
     public void Add(HandsTapValue handsValue)
     {
+        if (handsValue == null)
+            return;
         m_leftCombo.Append(handsValue.m_leftCombo);
         m_rightCombo.Append(handsValue.m_rightCombo);
 
     }
     public void Add(HandTapValue handValue)
     {
+        if (handValue == null)
+            return;
 
         if (handValue.m_handType == HandType.Left)
             m_leftCombo.Append(handValue);
@@ -164,6 +186,8 @@ public class HandsTapValue {
     }
     public void Add(TapValue handValue, HandType handType)
     {
+        if (handValue == null)
+            return;
 
         if (handType == HandType.Left)
             m_leftCombo.Append(handValue);
@@ -192,12 +216,30 @@ public class HandsTapValue {
 
     public void Set(HandsTapValue handsValue)
     {
+        
+        if (handsValue == null)
+            return;
+
 
         m_leftCombo.SetWith(handsValue.m_leftCombo);
         m_rightCombo.SetWith(handsValue.m_rightCombo);
     }
+
+    public bool HasFingerDown()
+    {
+        bool[] state = GetHandsState();
+        for (int i = 0; i < 10; i++)
+        {
+            if (state[i])
+                return true;
+        }
+        return false;
+    }
+
     public void Set(HandTapValue handValue)
     {
+        if (handValue == null)
+            return;
 
         if (handValue.m_handType == HandType.Left)
             m_leftCombo.SetWith(handValue);
@@ -205,6 +247,9 @@ public class HandsTapValue {
     }
     public void Set(TapValue handValue, HandType handType)
     {
+        if(handValue==null)
+            return;
+
         if (handType == HandType.Left)
             m_leftCombo.SetWith(handValue);
         else m_rightCombo.SetWith(handValue);
@@ -216,9 +261,11 @@ public class HandsTapValue {
         for (int i = 0; i < 10; i++)
         {
             if (i<5)
-                handState[i] = m_leftCombo.IsFingerActive(i);
+                handState[i] 
+                    = m_leftCombo.IsFingerActive(i);
             else
-                handState[i] = m_rightCombo.IsFingerActive(i-5);
+                handState[i]
+                    = m_rightCombo.IsFingerActive(i-5);
         }
         return handState;
     }
@@ -273,7 +320,7 @@ public class HandTapValue : TapValue {
     {
         if (a == null || b == null)
             return false;
-        return (a.m_combo == b.m_combo) && (a.m_handType == b.m_handType);
+        return (a.GetTapCombo() == b.GetTapCombo()) && (a.m_handType == b.m_handType);
     }
     public override int GetHashCode()
     {
@@ -297,7 +344,17 @@ public class TapValue
     {
         m_combo = combo;
     }
-    public TapCombo m_combo;
+
+    public TapValue()
+    {
+        m_combo = TapCombo.T_____;
+    }
+
+    [SerializeField]
+    TapCombo m_combo;
+
+    public TapCombo GetTapCombo() { return m_combo; }
+    public  void SetTapCombo(TapCombo comboValue ) {  m_combo = comboValue; }
 
     public override bool Equals(object obj)
     {
@@ -337,11 +394,16 @@ public class TapValue
 
     internal void SetWith(TapValue value)
     {
+        if (value == null)
+            return;
         m_combo = value.m_combo;
     }
 
     internal void Append(TapValue value)
     {
+        if (value == null)
+            return;
+
         bool [] current = GetFingersState();
         bool [] given = value.GetFingersState();
         bool [] result = new bool[5];

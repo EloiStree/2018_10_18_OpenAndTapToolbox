@@ -39,11 +39,15 @@ public class ListenToTapValue : MonoBehaviour, ITapListener
     public OnTapValueDetected m_onTapWithUsDetected;
 
     public HandsTapValue m_lastFrame = new HandsTapValue(TapCombo.T_____, TapCombo.T_____);
-
+    public HandsTapValue m_currentFrame = new HandsTapValue(TapCombo.T_____, TapCombo.T_____);
+  
 
     void Update () {
 
         string input = Input.inputString;
+        
+                m_currentFrame.Clear();
+
         if (input.Length > 0) {
             m_lastFrame.Clear();
             foreach (char c in input.ToCharArray())
@@ -57,10 +61,15 @@ public class ListenToTapValue : MonoBehaviour, ITapListener
                             tapValue = new TapValue(TapCombo.T_OOO_);
                         if (Input.GetKeyDown(KeyCode.Return))
                             tapValue = new TapValue(TapCombo.TO__OO);
+                        if (Input.GetKeyDown(KeyCode.Space))
+                            tapValue = new TapValue(TapCombo.TOOOOO);
 
                     }
                     m_lastFrame.Append(tapValue);
+                    m_currentFrame.Append(tapValue);
                     m_onTapWithUsDetected.Invoke(tapValue);
+
+
                     if (toDoOntapvalueDetected != null)
                         toDoOntapvalueDetected(this, tapValue);
                 }
@@ -91,9 +100,9 @@ public class ListenToTapValue : MonoBehaviour, ITapListener
     {
     }
 
-    public bool IsFingerDown(FingerIndex finger)
+    public bool IsFingerPressing(FingerIndex finger)
     {
-        return m_lastFrame.IsDown(finger);
+        return m_currentFrame.IsDown(finger);
 
     }
 }

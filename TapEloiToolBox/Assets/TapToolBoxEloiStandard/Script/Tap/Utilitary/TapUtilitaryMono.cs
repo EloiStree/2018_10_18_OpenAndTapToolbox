@@ -13,19 +13,27 @@ public class TapUtilitaryMono : MonoBehaviour {
     [Header("View")]
     public HandType m_userHandType;
     public HandsTapValue m_handsState;
+    public HandsTapValue dd;
 
 
     [Header("Debug ")]
     public List<HandsTapValue> m_debugReceived = new List<HandsTapValue>();
     public int m_debugCount=10;
-
+    [Header("Debug TMP")]
+    public bool[] down;
+    public bool[] pressing;
+    public bool[] up;
 
     public void Update()
     {
         m_userHandType = TapUtilitary.m_userHandType;
         m_handsState = TapUtilitary.GetHandsState();
 
+        down = TapUtilitary.m_handsIsDownState;
+        pressing = TapUtilitary.m_handsPressState;
+        up = TapUtilitary.m_handsIsUpState;
 
+        dd = TapUtilitary.dd;
     }
 
     void Start () {

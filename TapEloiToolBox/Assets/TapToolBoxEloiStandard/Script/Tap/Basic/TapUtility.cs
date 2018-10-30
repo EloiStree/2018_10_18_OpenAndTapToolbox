@@ -11,7 +11,7 @@ public class TapUtility : MonoBehaviour {
     {
         CharacterToTapWithUsStandard[] valuesFound = TapWithUsStandard.Where(k => k.m_character == character).OrderBy(k=>k.m_count).ToArray();
         if (valuesFound.Length > 0)
-            return new TapValue(valuesFound[0].m_tapvalue.m_combo);
+            return new TapValue(valuesFound[0].m_tapvalue.GetTapCombo());
         else
             return new TapValue( TapCombo.T_____);
         
@@ -22,7 +22,7 @@ public class TapUtility : MonoBehaviour {
     {
         CharacterToEloiStandard[] valuesFound= EloiStandard.Where(k => k.m_character == character).ToArray();
         if(valuesFound.Length>0)
-            return new HandTapValue(valuesFound[0].m_handType, valuesFound[0].m_tapValue.m_combo );
+            return new HandTapValue(valuesFound[0].m_handType, valuesFound[0].m_tapValue.GetTapCombo());
         else
             return new HandTapValue(HandType.Left, TapCombo.T_____);
     }
@@ -39,19 +39,19 @@ public class TapUtility : MonoBehaviour {
     internal static HandsTapValue ConvertToHandsValue(HandType handType,  TapValue value)
     {
         if (handType == HandType.Right)
-            return new HandsTapValue(TapCombo.T_____, value.m_combo);
+            return new HandsTapValue(TapCombo.T_____, value.GetTapCombo());
         else
-            return new HandsTapValue(value.m_combo, TapCombo.T_____);
+            return new HandsTapValue(value.GetTapCombo(), TapCombo.T_____);
     }
     internal static HandsTapValue ConvertToHandsValue(HandTapValue value)
     {
         if (value.m_handType == HandType.Right)
         {
-            return new HandsTapValue(TapCombo.T_____, value.m_combo);
+            return new HandsTapValue(TapCombo.T_____, value.GetTapCombo());
 
         }
         else {
-            return new HandsTapValue(value.m_combo,TapCombo.T_____);
+            return new HandsTapValue(value.GetTapCombo(), TapCombo.T_____);
         }
     }
 
